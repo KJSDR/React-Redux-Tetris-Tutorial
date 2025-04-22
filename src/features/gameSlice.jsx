@@ -44,7 +44,12 @@ export const gameSlice = createSlice({
       }
 
       // Can't move down: lock block into grid
-      const newGrid = addBlockToGrid(shape, grid, x, y, rotation);
+      const { newGrid, gameOver } = addBlockToGrid(shape, grid, x, y, rotation);
+
+      if (gameOver) {
+        state.gameOver = true;
+        return state;
+      }
 
       state.grid = newGrid;
       state.x = 3;
@@ -54,7 +59,7 @@ export const gameSlice = createSlice({
       state.nextShape = randomShape();
 
       // Game over check
-      if (!canMoveTo(state.shape, newGrid, state.x, state.y, state.rotation)) {
+      if (!canMoveTo(state.shape, newGrid, state.x, state.y, 0)) {
         state.shape = 0;
         state.gameOver = true;
         return state;
@@ -74,7 +79,7 @@ export const gameSlice = createSlice({
       return state;
     },
     gameOver: () => {},
-    restart: () => {}
+    restart: () => defaultState()
   },
 });
 
